@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your App, Here — Landing Page Demo by Dulla</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d17;
+    --bg-raised: #15151f;
+    --border: #232330;
+    --text: #f2f0f5;
+    --text-dim: #9490a3;
+    --text-faint: #57536b;
+    --violet: #8b5cf6;
+    --violet-bright: #a78bfa;
+    --violet-glow: rgba(139, 92, 246, 0.18);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    cursor: default;
+  }
+  .display { font-family: 'Space Grotesk', sans-serif; }
+  .mono { font-family: 'Space Grotesk', sans-serif; letter-spacing: 0.02em; }
+  a { color: inherit; text-decoration: none; }
+
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 5; }
+
+  /* ---------- TRAIL ZONE (hero) ---------- */
+  .trail-zone {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .trail-zone::before {
+    content: '';
+    position: absolute;
+    top: 10%; left: 50%;
+    width: 700px; height: 700px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, var(--violet-glow) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+    animation: ambient-drift 12s ease-in-out infinite;
+  }
+  @keyframes ambient-drift {
+    0%, 100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+    50% { transform: translateX(-46%) translateY(30px) scale(1.08); opacity: 0.85; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hero-content { text-align: center; width: 100%; }
+  .eyebrow {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    color: var(--violet-bright);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.4rem, 7vw, 4.6rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+  h1 .accent { color: var(--violet-bright); }
+  .hero-sub {
+    margin: 22px auto 0;
+    color: var(--text-dim);
+    font-size: 17px;
+    max-width: 480px;
+  }
+  .hero-cta {
+    margin-top: 36px;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    padding: 14px 26px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  }
+  .btn-primary {
+    background: var(--violet);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 12px 28px -6px var(--violet-glow);
+  }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-ghost:hover { border-color: var(--violet); color: var(--violet-bright); }
+
+  .hint {
+    margin-top: 56px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12.5px;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .hint-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--violet);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* ---------- TRAIL ICONS ---------- */
+  .trail-icon {
+    position: fixed;
+    width: 56px; height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+    animation: trail-pop 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    box-shadow: 0 8px 24px -6px rgba(0,0,0,0.5);
+  }
+  @keyframes trail-pop {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(var(--rot-start, -10deg)); }
+    18% { opacity: 1; transform: translate(-50%, -50%) scale(1.08) rotate(calc(var(--rot-start, 0deg) * 0.3)); }
+    35% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--drift-x, 0px)), calc(-50% + var(--drift-y, -30px))) scale(var(--scale-end, 0.85)) rotate(var(--rot-end, 8deg)); }
+  }
+
+  /* ---------- SECTIONS BELOW FOLD ---------- */
+  .section {
+    padding: 90px 0;
+    border-top: 1px solid var(--border);
+  }
+  .section-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12.5px;
+    color: var(--violet-bright);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.6rem, 4vw, 2.3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    max-width: 620px;
+  }
+  .section-desc {
+    margin-top: 16px;
+    color: var(--text-dim);
+    font-size: 15.5px;
+    max-width: 560px;
+  }
+
+  .feature-grid {
+    margin-top: 44px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  @media (max-width: 720px) {
+    .feature-grid { grid-template-columns: 1fr; }
+  }
+  .feature-item {
+    background: var(--bg);
+    padding: 32px 26px;
+  }
+  .feature-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--violet-glow);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 18px;
+  }
+  .feature-title { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .feature-desc { color: var(--text-dim); font-size: 13.5px; line-height: 1.6; }
+
+  .closing {
+    padding: 100px 0;
+    text-align: center;
+  }
+  .closing h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+  .closing p { margin: 18px auto 0; color: var(--text-dim); font-size: 15.5px; max-width: 480px; }
+  .closing-cta { margin-top: 32px; }
+
+  footer {
+    padding: 32px 0;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12.5px;
+    color: var(--text-faint);
+  }
+  footer a { color: var(--violet-bright); }
+</style>
+</head>
+<body>
+
+<div class="trail-zone" id="trailZone">
+  <div class="wrap">
+    <div class="hero-content">
+      <div class="eyebrow">LANDING PAGE CONCEPT</div>
+      <h1>Your app<br>could look <span class="accent">like this.</span></h1>
+      <p class="hero-sub">A demo of the kind of landing page I build — motion, personality, and a page that actually shows what your product feels like to use.</p>
+      <div class="hero-cta">
+        <a href="#work-with-me" class="btn btn-primary">Want one for your app? →</a>
+      </div>
+      <div class="hint"><span class="hint-dot"></span>Move your cursor around</div>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">What this demonstrates</div>
+    <h2 class="section-title">Landing pages that feel like the product, not a template.</h2>
+    <p class="section-desc">This page is a demo, not a client site — built to show the kind of interaction design and motion I can bring to a real app or brand launch.</p>
+
+    <div class="feature-grid">
+      <div class="feature-item reveal" style="transition-delay: 0s;">
+        <div class="feature-icon">✦</div>
+        <div class="feature-title">Signature motion</div>
+        <div class="feature-desc">One memorable interaction, built around what your product actually does — not a generic animation bolted on.</div>
+      </div>
+      <div class="feature-item reveal" style="transition-delay: 0.1s;">
+        <div class="feature-icon">◆</div>
+        <div class="feature-title">Built from scratch</div>
+        <div class="feature-desc">Custom HTML, CSS, and JavaScript — no page builder templates, so the design is entirely your own.</div>
+      </div>
+      <div class="feature-item reveal" style="transition-delay: 0.2s;">
+        <div class="feature-icon">▲</div>
+        <div class="feature-title">Fast and simple to host</div>
+        <div class="feature-desc">Lightweight, static, and easy to deploy — no bloated frameworks slowing down your launch.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="closing" id="work-with-me">
+  <div class="wrap">
+    <h2 class="reveal">Want a landing page like this for your app?</h2>
+    <p class="reveal" style="transition-delay: 0.1s;">I build custom sites and landing pages with the kind of motion and detail that makes a launch feel considered.</p>
+    <div class="closing-cta">
+      <a href="mailto:jullevenjobs@gmail.com" class="btn btn-primary">Email Dulla →</a>
+    </div>
+  </div>
+</div>
+
+<footer>Demo landing page by <a href="https://du11a.github.io/Portfolio" target="_blank">Dulla</a> · Inspired by modern app landing pages</footer>
+
+<script>
+  const ICONS = [
+    { emoji: '🎧', bg: '#1DB954', shape: 'circle' },
+    { emoji: '🎬', bg: '#E50914', shape: 'square' },
+    { emoji: '📝', bg: '#000000', shape: 'rounded' },
+    { emoji: '💬', bg: '#4A154B', shape: 'rounded' },
+    { emoji: '🎨', bg: '#0ACF83', shape: 'circle' },
+    { emoji: '📷', bg: '#C13584', shape: 'circle' },
+    { emoji: '🎮', bg: '#5865F2', shape: 'rounded' },
+    { emoji: '📚', bg: '#F3722C', shape: 'square' },
+    { emoji: '✈️', bg: '#0091FF', shape: 'circle' },
+    { emoji: '🎵', bg: '#FA243C', shape: 'circle' },
+    { emoji: '📅', bg: '#4285F4', shape: 'rounded' },
+    { emoji: '💰', bg: '#00D09C', shape: 'square' }
+  ];
+
+  const SHAPE_RADIUS = { circle: '50%', square: '6px', rounded: '16px' };
+
+  const trailZone = document.getElementById('trailZone');
+  let lastSpawn = 0;
+  const SPAWN_INTERVAL = 130; // ms between icon spawns
+
+  function spawnIcon(x, y) {
+    const icon = document.createElement('div');
+    icon.className = 'trail-icon';
+    const choice = ICONS[Math.floor(Math.random() * ICONS.length)];
+    icon.textContent = choice.emoji;
+    icon.style.left = x + 'px';
+    icon.style.top = y + 'px';
+    icon.style.background = choice.bg;
+    icon.style.borderRadius = SHAPE_RADIUS[choice.shape];
+
+    const driftX = (Math.random() - 0.5) * 90;
+    const driftY = -30 - Math.random() * 55;
+    const rotStart = (Math.random() - 0.5) * 70;
+    const rotEnd = (Math.random() - 0.5) * 90;
+    const scaleEnd = 0.75 + Math.random() * 0.3;
+    icon.style.setProperty('--drift-x', driftX + 'px');
+    icon.style.setProperty('--drift-y', driftY + 'px');
+    icon.style.setProperty('--rot-start', rotStart + 'deg');
+    icon.style.setProperty('--rot-end', rotEnd + 'deg');
+    icon.style.setProperty('--scale-end', scaleEnd);
+
+    document.body.appendChild(icon);
+    setTimeout(() => icon.remove(), 1450);
+  }
+
+  function handleMove(clientX, clientY) {
+    const now = Date.now();
+    if (now - lastSpawn < SPAWN_INTERVAL) return;
+    lastSpawn = now;
+    spawnIcon(clientX, clientY);
+  }
+
+  trailZone.addEventListener('mousemove', (e) => {
+    handleMove(e.clientX, e.clientY);
+  });
+
+  trailZone.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    if (touch) handleMove(touch.clientX, touch.clientY);
+  }, { passive: true });
+
+  // Respect reduced motion preference
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) {
+    trailZone.removeEventListener('mousemove', handleMove);
+  }
+
+  // ---------- SCROLL REVEAL ----------
+  if (!prefersReducedMotion) {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
+  }
+
+  // ---------- MAGNETIC BUTTONS ----------
+  if (!prefersReducedMotion) {
+    document.querySelectorAll('.btn').forEach(btn => {
+      const strength = 0.35;
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = '';
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
