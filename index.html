@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your App, Here — Landing Page Demo by Dulla</title>
+<title>Your App, Here — Landing Page Demo by Dulla (Alpine.js)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.14.1/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
 <style>
   :root {
     --bg: #0d0d17;
@@ -31,7 +33,6 @@
     cursor: default;
   }
   .display { font-family: 'Space Grotesk', sans-serif; }
-  .mono { font-family: 'Space Grotesk', sans-serif; letter-spacing: 0.02em; }
   a { color: inherit; text-decoration: none; }
 
   .wrap { max-width: 900px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 5; }
@@ -244,22 +245,38 @@
     color: var(--text-faint);
   }
   footer a { color: var(--violet-bright); }
+
+  /* Fixed trail icon layer, spawned via Alpine loop */
+  .trail-layer { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
 </style>
 </head>
-<body>
+<body x-data="landingPage()" x-init="init()">
 
-<div class="trail-zone" id="trailZone">
+<div class="trail-zone" id="trailZone"
+     @mousemove="handleMove($event.clientX, $event.clientY)"
+     @touchmove.passive="handleMove($event.touches[0].clientX, $event.touches[0].clientY)">
   <div class="wrap">
     <div class="hero-content">
       <div class="eyebrow">LANDING PAGE CONCEPT</div>
       <h1>Your app<br>could look <span class="accent">like this.</span></h1>
       <p class="hero-sub">A demo of the kind of landing page I build — motion, personality, and a page that actually shows what your product feels like to use.</p>
       <div class="hero-cta">
-        <a href="#work-with-me" class="btn btn-primary">Want one for your app? →</a>
+        <a href="#work-with-me" class="btn btn-primary" @mousemove="magnetic($event)" @mouseleave="resetMagnetic($event)">Want one for your app? →</a>
       </div>
       <div class="hint"><span class="hint-dot"></span>Move your cursor around</div>
     </div>
   </div>
+</div>
+
+<!-- Trail icons render here, driven by Alpine state instead of manual DOM creation -->
+<div class="trail-layer">
+  <template x-for="icon in icons" :key="icon.id">
+    <div class="trail-icon"
+         :style="`left:${icon.x}px; top:${icon.y}px; background:${icon.bg}; border-radius:${icon.radius};
+                  --drift-x:${icon.driftX}px; --drift-y:${icon.driftY}px;
+                  --rot-start:${icon.rotStart}deg; --rot-end:${icon.rotEnd}deg; --scale-end:${icon.scaleEnd};`"
+         x-text="icon.emoji"></div>
+  </template>
 </div>
 
 <section class="section">
@@ -269,17 +286,17 @@
     <p class="section-desc">This page is a demo, not a client site — built to show the kind of interaction design and motion I can bring to a real app or brand launch.</p>
 
     <div class="feature-grid">
-      <div class="feature-item reveal" style="transition-delay: 0s;">
+      <div class="feature-item reveal" x-intersect.once="$el.classList.add('in-view')" style="transition-delay: 0s;">
         <div class="feature-icon">✦</div>
         <div class="feature-title">Signature motion</div>
         <div class="feature-desc">One memorable interaction, built around what your product actually does — not a generic animation bolted on.</div>
       </div>
-      <div class="feature-item reveal" style="transition-delay: 0.1s;">
+      <div class="feature-item reveal" x-intersect.once="$el.classList.add('in-view')" style="transition-delay: 0.1s;">
         <div class="feature-icon">◆</div>
         <div class="feature-title">Built from scratch</div>
         <div class="feature-desc">Custom HTML, CSS, and JavaScript — no page builder templates, so the design is entirely your own.</div>
       </div>
-      <div class="feature-item reveal" style="transition-delay: 0.2s;">
+      <div class="feature-item reveal" x-intersect.once="$el.classList.add('in-view')" style="transition-delay: 0.2s;">
         <div class="feature-icon">▲</div>
         <div class="feature-title">Fast and simple to host</div>
         <div class="feature-desc">Lightweight, static, and easy to deploy — no bloated frameworks slowing down your launch.</div>
@@ -290,115 +307,94 @@
 
 <div class="closing" id="work-with-me">
   <div class="wrap">
-    <h2 class="reveal">Want a landing page like this for your app?</h2>
-    <p class="reveal" style="transition-delay: 0.1s;">I build custom sites and landing pages with the kind of motion and detail that makes a launch feel considered.</p>
+    <h2 class="reveal" x-intersect.once="$el.classList.add('in-view')">Want a landing page like this for your app?</h2>
+    <p class="reveal" x-intersect.once="$el.classList.add('in-view')" style="transition-delay: 0.1s;">I build custom sites and landing pages with the kind of motion and detail that makes a launch feel considered.</p>
     <div class="closing-cta">
-      <a href="mailto:jullevenjobs@gmail.com" class="btn btn-primary">Email Dulla →</a>
+      <a href="mailto:jullevenjobs@gmail.com" class="btn btn-primary" @mousemove="magnetic($event)" @mouseleave="resetMagnetic($event)">Email Dulla →</a>
     </div>
   </div>
 </div>
 
-<footer>Demo landing page by <a href="https://du11a.github.io/Portfolio" target="_blank">Dulla</a> · Inspired by modern app landing pages</footer>
+<footer>Demo landing page by <a href="https://du11a.github.io/Portfolio" target="_blank">Dulla</a> · Inspired by modern app landing pages · Rewritten with Alpine.js</footer>
 
 <script>
-  const ICONS = [
-    { emoji: '🎧', bg: '#1DB954', shape: 'circle' },
-    { emoji: '🎬', bg: '#E50914', shape: 'square' },
-    { emoji: '📝', bg: '#000000', shape: 'rounded' },
-    { emoji: '💬', bg: '#4A154B', shape: 'rounded' },
-    { emoji: '🎨', bg: '#0ACF83', shape: 'circle' },
-    { emoji: '📷', bg: '#C13584', shape: 'circle' },
-    { emoji: '🎮', bg: '#5865F2', shape: 'rounded' },
-    { emoji: '📚', bg: '#F3722C', shape: 'square' },
-    { emoji: '✈️', bg: '#0091FF', shape: 'circle' },
-    { emoji: '🎵', bg: '#FA243C', shape: 'circle' },
-    { emoji: '📅', bg: '#4285F4', shape: 'rounded' },
-    { emoji: '💰', bg: '#00D09C', shape: 'square' }
-  ];
+  function landingPage() {
+    return {
+      icons: [],
+      nextId: 0,
+      lastSpawn: 0,
+      spawnInterval: 130,
+      prefersReducedMotion: false,
 
-  const SHAPE_RADIUS = { circle: '50%', square: '6px', rounded: '16px' };
+      ICONS: [
+        { emoji: '🎧', bg: '#1DB954', shape: 'circle' },
+        { emoji: '🎬', bg: '#E50914', shape: 'square' },
+        { emoji: '📝', bg: '#000000', shape: 'rounded' },
+        { emoji: '💬', bg: '#4A154B', shape: 'rounded' },
+        { emoji: '🎨', bg: '#0ACF83', shape: 'circle' },
+        { emoji: '📷', bg: '#C13584', shape: 'circle' },
+        { emoji: '🎮', bg: '#5865F2', shape: 'rounded' },
+        { emoji: '📚', bg: '#F3722C', shape: 'square' },
+        { emoji: '✈️', bg: '#0091FF', shape: 'circle' },
+        { emoji: '🎵', bg: '#FA243C', shape: 'circle' },
+        { emoji: '📅', bg: '#4285F4', shape: 'rounded' },
+        { emoji: '💰', bg: '#00D09C', shape: 'square' }
+      ],
+      SHAPE_RADIUS: { circle: '50%', square: '6px', rounded: '16px' },
 
-  const trailZone = document.getElementById('trailZone');
-  let lastSpawn = 0;
-  const SPAWN_INTERVAL = 130; // ms between icon spawns
-
-  function spawnIcon(x, y) {
-    const icon = document.createElement('div');
-    icon.className = 'trail-icon';
-    const choice = ICONS[Math.floor(Math.random() * ICONS.length)];
-    icon.textContent = choice.emoji;
-    icon.style.left = x + 'px';
-    icon.style.top = y + 'px';
-    icon.style.background = choice.bg;
-    icon.style.borderRadius = SHAPE_RADIUS[choice.shape];
-
-    const driftX = (Math.random() - 0.5) * 90;
-    const driftY = -30 - Math.random() * 55;
-    const rotStart = (Math.random() - 0.5) * 70;
-    const rotEnd = (Math.random() - 0.5) * 90;
-    const scaleEnd = 0.75 + Math.random() * 0.3;
-    icon.style.setProperty('--drift-x', driftX + 'px');
-    icon.style.setProperty('--drift-y', driftY + 'px');
-    icon.style.setProperty('--rot-start', rotStart + 'deg');
-    icon.style.setProperty('--rot-end', rotEnd + 'deg');
-    icon.style.setProperty('--scale-end', scaleEnd);
-
-    document.body.appendChild(icon);
-    setTimeout(() => icon.remove(), 1450);
-  }
-
-  function handleMove(clientX, clientY) {
-    const now = Date.now();
-    if (now - lastSpawn < SPAWN_INTERVAL) return;
-    lastSpawn = now;
-    spawnIcon(clientX, clientY);
-  }
-
-  trailZone.addEventListener('mousemove', (e) => {
-    handleMove(e.clientX, e.clientY);
-  });
-
-  trailZone.addEventListener('touchmove', (e) => {
-    const touch = e.touches[0];
-    if (touch) handleMove(touch.clientX, touch.clientY);
-  }, { passive: true });
-
-  // Respect reduced motion preference
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion) {
-    trailZone.removeEventListener('mousemove', handleMove);
-  }
-
-  // ---------- SCROLL REVEAL ----------
-  if (!prefersReducedMotion) {
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-          revealObserver.unobserve(entry.target);
+      init() {
+        this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (this.prefersReducedMotion) {
+          // Skip animated reveal — just show everything immediately
+          document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
         }
-      });
-    }, { threshold: 0.15 });
+      },
 
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-  } else {
-    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
-  }
+      handleMove(x, y) {
+        if (this.prefersReducedMotion) return;
+        const now = Date.now();
+        if (now - this.lastSpawn < this.spawnInterval) return;
+        this.lastSpawn = now;
+        this.spawnIcon(x, y);
+      },
 
-  // ---------- MAGNETIC BUTTONS ----------
-  if (!prefersReducedMotion) {
-    document.querySelectorAll('.btn').forEach(btn => {
-      const strength = 0.35;
-      btn.addEventListener('mousemove', (e) => {
+      spawnIcon(x, y) {
+        const choice = this.ICONS[Math.floor(Math.random() * this.ICONS.length)];
+        const id = this.nextId++;
+
+        const icon = {
+          id,
+          emoji: choice.emoji,
+          bg: choice.bg,
+          radius: this.SHAPE_RADIUS[choice.shape],
+          x, y,
+          driftX: (Math.random() - 0.5) * 90,
+          driftY: -30 - Math.random() * 55,
+          rotStart: (Math.random() - 0.5) * 70,
+          rotEnd: (Math.random() - 0.5) * 90,
+          scaleEnd: 0.75 + Math.random() * 0.3
+        };
+
+        this.icons.push(icon);
+        // Same 1450ms lifetime as the original setTimeout removal
+        setTimeout(() => {
+          this.icons = this.icons.filter(i => i.id !== id);
+        }, 1450);
+      },
+
+      magnetic(e) {
+        if (this.prefersReducedMotion) return;
+        const btn = e.currentTarget;
         const rect = btn.getBoundingClientRect();
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
-        btn.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
-      });
-      btn.addEventListener('mouseleave', () => {
-        btn.style.transform = '';
-      });
-    });
+        btn.style.transform = `translate(${x * 0.35}px, ${y * 0.35}px)`;
+      },
+
+      resetMagnetic(e) {
+        e.currentTarget.style.transform = '';
+      }
+    };
   }
 </script>
 
