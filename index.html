@@ -3,55 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your App, Here — Landing Page Demo by Dulla (Alpine.js)</title>
+<title>Your App, Here — Landing Page Demo by Dulla (Alpine.js + Tailwind)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#0d0d17',
+          bgraised: '#15151f',
+          border: '#232330',
+          text: '#f2f0f5',
+          dim: '#9490a3',
+          faint: '#57536b',
+          violet: '#8b5cf6',
+          violetbright: '#a78bfa',
+        },
+        fontFamily: {
+          display: ['Space Grotesk', 'sans-serif'],
+          sans: ['Inter', '-apple-system', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.14.1/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
 <style>
-  :root {
-    --bg: #0d0d17;
-    --bg-raised: #15151f;
-    --border: #232330;
-    --text: #f2f0f5;
-    --text-dim: #9490a3;
-    --text-faint: #57536b;
-    --violet: #8b5cf6;
-    --violet-bright: #a78bfa;
-    --violet-glow: rgba(139, 92, 246, 0.18);
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', -apple-system, sans-serif;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-    cursor: default;
-  }
-  .display { font-family: 'Space Grotesk', sans-serif; }
-  a { color: inherit; text-decoration: none; }
+  /* Kept as raw CSS: keyframe animations and CSS-var-driven transforms that
+     Tailwind's utility classes can't express without a build step. */
+  body { cursor: default; }
 
-  .wrap { max-width: 900px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 5; }
+  .violet-glow { background: rgba(139, 92, 246, 0.18); }
 
-  /* ---------- TRAIL ZONE (hero) ---------- */
-  .trail-zone {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-  }
   .trail-zone::before {
     content: '';
     position: absolute;
     top: 10%; left: 50%;
     width: 700px; height: 700px;
     transform: translateX(-50%);
-    background: radial-gradient(circle, var(--violet-glow) 0%, transparent 65%);
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.18) 0%, transparent 65%);
     pointer-events: none;
     z-index: 0;
     animation: ambient-drift 12s ease-in-out infinite;
@@ -66,85 +60,14 @@
     transform: translateY(28px);
     transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .reveal.in-view {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
 
-  .hero-content { text-align: center; width: 100%; }
-  .eyebrow {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 13px;
-    color: var(--violet-bright);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 22px;
-  }
-  h1 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(2.4rem, 7vw, 4.6rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.08;
-  }
-  h1 .accent { color: var(--violet-bright); }
-  .hero-sub {
-    margin: 22px auto 0;
-    color: var(--text-dim);
-    font-size: 17px;
-    max-width: 480px;
-  }
-  .hero-cta {
-    margin-top: 36px;
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .btn {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 14.5px;
-    font-weight: 600;
-    padding: 14px 26px;
-    border-radius: 8px;
-    cursor: pointer;
-    border: none;
-    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
-  }
-  .btn-primary {
-    background: var(--violet);
-    color: #fff;
-  }
-  .btn-primary:hover {
-    box-shadow: 0 12px 28px -6px var(--violet-glow);
-  }
-  .btn-ghost {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text);
-  }
-  .btn-ghost:hover { border-color: var(--violet); color: var(--violet-bright); }
-
-  .hint {
-    margin-top: 56px;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 12.5px;
-    color: var(--text-faint);
-    letter-spacing: 0.04em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  .hint-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--violet);
-    animation: pulse 2s infinite;
-  }
+  .hint-dot { animation: pulse 2s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-  /* ---------- TRAIL ICONS ---------- */
+  .btn { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease; }
+  .btn-primary:hover { box-shadow: 0 12px 28px -6px rgba(139, 92, 246, 0.18); }
+
   .trail-icon {
     position: fixed;
     width: 56px; height: 56px;
@@ -165,111 +88,38 @@
     35% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
     100% { opacity: 0; transform: translate(calc(-50% + var(--drift-x, 0px)), calc(-50% + var(--drift-y, -30px))) scale(var(--scale-end, 0.85)) rotate(var(--rot-end, 8deg)); }
   }
-
-  /* ---------- SECTIONS BELOW FOLD ---------- */
-  .section {
-    padding: 90px 0;
-    border-top: 1px solid var(--border);
-  }
-  .section-label {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 12.5px;
-    color: var(--violet-bright);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-bottom: 14px;
-  }
-  .section-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(1.6rem, 4vw, 2.3rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    max-width: 620px;
-  }
-  .section-desc {
-    margin-top: 16px;
-    color: var(--text-dim);
-    font-size: 15.5px;
-    max-width: 560px;
-  }
-
-  .feature-grid {
-    margin-top: 44px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  @media (max-width: 720px) {
-    .feature-grid { grid-template-columns: 1fr; }
-  }
-  .feature-item {
-    background: var(--bg);
-    padding: 32px 26px;
-  }
-  .feature-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    background: var(--violet-glow);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-    margin-bottom: 18px;
-  }
-  .feature-title { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-  .feature-desc { color: var(--text-dim); font-size: 13.5px; line-height: 1.6; }
-
-  .closing {
-    padding: 100px 0;
-    text-align: center;
-  }
-  .closing h2 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    max-width: 620px;
-    margin: 0 auto;
-  }
-  .closing p { margin: 18px auto 0; color: var(--text-dim); font-size: 15.5px; max-width: 480px; }
-  .closing-cta { margin-top: 32px; }
-
-  footer {
-    padding: 32px 0;
-    text-align: center;
-    border-top: 1px solid var(--border);
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 12.5px;
-    color: var(--text-faint);
-  }
-  footer a { color: var(--violet-bright); }
-
-  /* Fixed trail icon layer, spawned via Alpine loop */
-  .trail-layer { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
 </style>
 </head>
-<body x-data="landingPage()" x-init="init()">
+<body class="bg-bg text-text font-sans leading-relaxed antialiased overflow-x-hidden" x-data="landingPage()" x-init="init()">
 
-<div class="trail-zone" id="trailZone"
+<div class="trail-zone relative min-h-screen flex items-center overflow-hidden" id="trailZone"
      @mousemove="handleMove($event.clientX, $event.clientY)"
      @touchmove.passive="handleMove($event.touches[0].clientX, $event.touches[0].clientY)">
-  <div class="wrap">
-    <div class="hero-content">
-      <div class="eyebrow">LANDING PAGE CONCEPT</div>
-      <h1>Your app<br>could look <span class="accent">like this.</span></h1>
-      <p class="hero-sub">A demo of the kind of landing page I build — motion, personality, and a page that actually shows what your product feels like to use.</p>
-      <div class="hero-cta">
-        <a href="#work-with-me" class="btn btn-primary" @mousemove="magnetic($event)" @mouseleave="resetMagnetic($event)">Want one for your app? →</a>
+  <div class="max-w-[900px] mx-auto px-7 relative z-[5] w-full">
+    <div class="text-center">
+      <div class="font-display text-[13px] text-violetbright tracking-[0.08em] uppercase mb-5">LANDING PAGE CONCEPT</div>
+      <h1 class="font-display font-bold tracking-[-0.03em] leading-[1.08]" style="font-size: clamp(2.4rem, 7vw, 4.6rem);">
+        Your app<br>could look <span class="text-violetbright">like this.</span>
+      </h1>
+      <p class="mt-5 mx-auto text-dim text-[17px] max-w-[480px]">
+        A demo of the kind of landing page I build — motion, personality, and a page that actually shows what your product feels like to use.
+      </p>
+      <div class="mt-9 flex gap-3.5 justify-center flex-wrap">
+        <a href="#work-with-me"
+           class="btn btn-primary font-display text-[14.5px] font-semibold px-[26px] py-[14px] rounded-lg bg-violet text-white whitespace-nowrap"
+           @mousemove="magnetic($event)" @mouseleave="resetMagnetic($event)">
+          Want one for your app? →
+        </a>
       </div>
-      <div class="hint"><span class="hint-dot"></span>Move your cursor around</div>
+      <div class="mt-14 font-display text-[12.5px] text-faint tracking-[0.04em] flex items-center justify-center gap-2">
+        <span class="hint-dot w-1.5 h-1.5 rounded-full bg-violet"></span>Move your cursor around
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Trail icons render here, driven by Alpine state instead of manual DOM creation -->
-<div class="trail-layer">
+<div class="fixed inset-0 pointer-events-none z-10">
   <template x-for="icon in icons" :key="icon.id">
     <div class="trail-icon"
          :style="`left:${icon.x}px; top:${icon.y}px; background:${icon.bg}; border-radius:${icon.radius};
@@ -279,43 +129,57 @@
   </template>
 </div>
 
-<section class="section">
-  <div class="wrap">
-    <div class="section-label">What this demonstrates</div>
-    <h2 class="section-title">Landing pages that feel like the product, not a template.</h2>
-    <p class="section-desc">This page is a demo, not a client site — built to show the kind of interaction design and motion I can bring to a real app or brand launch.</p>
+<section class="py-[90px] border-t border-border">
+  <div class="max-w-[900px] mx-auto px-7">
+    <div class="font-display text-[12.5px] text-violetbright tracking-[0.06em] uppercase mb-3.5">What this demonstrates</div>
+    <h2 class="font-display font-bold tracking-[-0.02em] max-w-[620px]" style="font-size: clamp(1.6rem, 4vw, 2.3rem);">
+      Landing pages that feel like the product, not a template.
+    </h2>
+    <p class="mt-4 text-dim text-[15.5px] max-w-[560px]">
+      This page is a demo, not a client site — built to show the kind of interaction design and motion I can bring to a real app or brand launch.
+    </p>
 
-    <div class="feature-grid">
-      <div class="feature-item reveal" x-intersect.once="$el.classList.add('in-view')" style="transition-delay: 0s;">
-        <div class="feature-icon">✦</div>
-        <div class="feature-title">Signature motion</div>
-        <div class="feature-desc">One memorable interaction, built around what your product actually does — not a generic animation bolted on.</div>
+    <div class="mt-11 grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border rounded-xl overflow-hidden">
+      <div class="reveal bg-bg p-8 pr-[26px]" x-intersect.once="$el.classList.add('in-view')" style="transition-delay: 0s;">
+        <div class="violet-glow w-10 h-10 rounded-[10px] flex items-center justify-center text-lg mb-[18px]">✦</div>
+        <div class="font-display text-base font-semibold mb-2">Signature motion</div>
+        <div class="text-dim text-[13.5px] leading-relaxed">One memorable interaction, built around what your product actually does — not a generic animation bolted on.</div>
       </div>
-      <div class="feature-item reveal" x-intersect.once="$el.classList.add('in-view')" style="transition-delay: 0.1s;">
-        <div class="feature-icon">◆</div>
-        <div class="feature-title">Built from scratch</div>
-        <div class="feature-desc">Custom HTML, CSS, and JavaScript — no page builder templates, so the design is entirely your own.</div>
+      <div class="reveal bg-bg p-8 pr-[26px]" x-intersect.once="$el.classList.add('in-view')" style="transition-delay: 0.1s;">
+        <div class="violet-glow w-10 h-10 rounded-[10px] flex items-center justify-center text-lg mb-[18px]">◆</div>
+        <div class="font-display text-base font-semibold mb-2">Built from scratch</div>
+        <div class="text-dim text-[13.5px] leading-relaxed">Custom HTML, CSS, and JavaScript — no page builder templates, so the design is entirely your own.</div>
       </div>
-      <div class="feature-item reveal" x-intersect.once="$el.classList.add('in-view')" style="transition-delay: 0.2s;">
-        <div class="feature-icon">▲</div>
-        <div class="feature-title">Fast and simple to host</div>
-        <div class="feature-desc">Lightweight, static, and easy to deploy — no bloated frameworks slowing down your launch.</div>
+      <div class="reveal bg-bg p-8 pr-[26px]" x-intersect.once="$el.classList.add('in-view')" style="transition-delay: 0.2s;">
+        <div class="violet-glow w-10 h-10 rounded-[10px] flex items-center justify-center text-lg mb-[18px]">▲</div>
+        <div class="font-display text-base font-semibold mb-2">Fast and simple to host</div>
+        <div class="text-dim text-[13.5px] leading-relaxed">Lightweight, static, and easy to deploy — no bloated frameworks slowing down your launch.</div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="closing" id="work-with-me">
-  <div class="wrap">
-    <h2 class="reveal" x-intersect.once="$el.classList.add('in-view')">Want a landing page like this for your app?</h2>
-    <p class="reveal" x-intersect.once="$el.classList.add('in-view')" style="transition-delay: 0.1s;">I build custom sites and landing pages with the kind of motion and detail that makes a launch feel considered.</p>
-    <div class="closing-cta">
-      <a href="mailto:jullevenjobs@gmail.com" class="btn btn-primary" @mousemove="magnetic($event)" @mouseleave="resetMagnetic($event)">Email Dulla →</a>
+<div class="py-[100px] text-center border-t border-border" id="work-with-me">
+  <div class="max-w-[900px] mx-auto px-7">
+    <h2 class="reveal font-display font-bold tracking-[-0.02em] max-w-[620px] mx-auto" x-intersect.once="$el.classList.add('in-view')" style="font-size: clamp(1.8rem, 4.5vw, 2.6rem);">
+      Want a landing page like this for your app?
+    </h2>
+    <p class="reveal mt-[18px] mx-auto text-dim text-[15.5px] max-w-[480px]" x-intersect.once="$el.classList.add('in-view')" style="transition-delay: 0.1s;">
+      I build custom sites and landing pages with the kind of motion and detail that makes a launch feel considered.
+    </p>
+    <div class="mt-8">
+      <a href="mailto:jullevenjobs@gmail.com"
+         class="btn btn-primary font-display text-[14.5px] font-semibold px-[26px] py-[14px] rounded-lg bg-violet text-white inline-block whitespace-nowrap"
+         @mousemove="magnetic($event)" @mouseleave="resetMagnetic($event)">
+        Email Dulla →
+      </a>
     </div>
   </div>
 </div>
 
-<footer>Demo landing page by <a href="https://du11a.github.io/Portfolio" target="_blank">Dulla</a> · Inspired by modern app landing pages · Rewritten with Alpine.js</footer>
+<footer class="py-8 text-center border-t border-border font-display text-[12.5px] text-faint">
+  Demo landing page by <a href="https://du11a.github.io/Portfolio" target="_blank" class="text-violetbright">Dulla</a> · Inspired by modern app landing pages · Rewritten with Alpine.js + Tailwind
+</footer>
 
 <script>
   function landingPage() {
@@ -345,7 +209,6 @@
       init() {
         this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (this.prefersReducedMotion) {
-          // Skip animated reveal — just show everything immediately
           document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
         }
       },
@@ -376,7 +239,6 @@
         };
 
         this.icons.push(icon);
-        // Same 1450ms lifetime as the original setTimeout removal
         setTimeout(() => {
           this.icons = this.icons.filter(i => i.id !== id);
         }, 1450);
