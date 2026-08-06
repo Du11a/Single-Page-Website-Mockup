@@ -14,7 +14,6 @@
       extend: {
         colors: {
           bg: '#0d0d17',
-          bgraised: '#15151f',
           border: '#232330',
           text: '#f2f0f5',
           dim: '#9490a3',
@@ -33,8 +32,6 @@
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.14.1/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
 <style>
-  /* Kept as raw CSS: keyframe animations and CSS-var-driven transforms that
-     Tailwind's utility classes can't express without a build step. */
   body { cursor: default; }
 
   .violet-glow { background: rgba(139, 92, 246, 0.18); }
@@ -118,7 +115,6 @@
   </div>
 </div>
 
-<!-- Trail icons render here, driven by Alpine state instead of manual DOM creation -->
 <div class="fixed inset-0 pointer-events-none z-10">
   <template x-for="icon in icons" :key="icon.id">
     <div class="trail-icon"
