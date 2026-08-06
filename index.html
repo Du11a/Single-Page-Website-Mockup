@@ -41,15 +41,20 @@
     position: absolute;
     top: 10%; left: 50%;
     width: 700px; height: 700px;
-    transform: translateX(-50%);
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.18) 0%, transparent 65%);
+    transform: translate(-50%, var(--parallax-y, 0px));
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.28) 0%, transparent 65%);
     pointer-events: none;
     z-index: 0;
     animation: ambient-drift 12s ease-in-out infinite;
+    transition: transform 0.1s linear;
   }
   @keyframes ambient-drift {
-    0%, 100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
-    50% { transform: translateX(-46%) translateY(30px) scale(1.08); opacity: 0.85; }
+    0%, 100% { transform: translate(-50%, var(--parallax-y, 0px)) scale(1); opacity: 1; }
+    50% { transform: translate(calc(-50% + 12px), calc(var(--parallax-y, 0px) + 30px)) scale(1.08); opacity: 0.85; }
+  }
+
+  body {
+    transition: background-color 0.4s ease;
   }
 
   .reveal {
@@ -87,7 +92,7 @@
   }
 </style>
 </head>
-<body class="bg-bg text-text font-sans leading-relaxed antialiased overflow-x-hidden" x-data="landingPage()" x-init="init()">
+<body class="bg-bg text-text font-sans leading-relaxed antialiased overflow-x-hidden" x-data="landingPage()" x-init="init()" @scroll.window="onScroll()">
 
 <div class="trail-zone relative min-h-screen flex items-center overflow-hidden" id="trailZone"
      @mousemove="handleMove($event.clientX, $event.clientY)"
@@ -185,6 +190,8 @@
       lastSpawn: 0,
       spawnInterval: 130,
       prefersReducedMotion: false,
+      scrollTicking: false,
+      bgStops: ['#0d0d17', '#1a1230', '#171029', '#0d0d17'],
 
       ICONS: [
         { emoji: '🎧', bg: '#1DB954', shape: 'circle' },
@@ -207,6 +214,47 @@
         if (this.prefersReducedMotion) {
           document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
         }
+      },
+
+      onScroll() {
+        if (this.prefersReducedMotion || this.scrollTicking) return;
+        this.scrollTicking = true;
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = docHeight > 0 ? Math.min(scrollY / docHeight, 1) : 0;
+
+          const parallaxY = scrollY * 0.5;
+          document.documentElement.style.setProperty('--parallax-y', `${parallaxY}px`);
+
+          document.body.style.backgroundColor = this.interpolateColor(progress);
+
+          this.scrollTicking = false;
+        });
+      },
+
+      interpolateColor(progress) {
+        const segment = progress * (this.bgStops.length - 1);
+        const index = Math.min(Math.floor(segment), this.bgStops.length - 2);
+        const localProgress = segment - index;
+
+        const from = this.hexToRgb(this.bgStops[index]);
+        const to = this.hexToRgb(this.bgStops[index + 1]);
+
+        const r = Math.round(from.r + (to.r - from.r) * localProgress);
+        const g = Math.round(from.g + (to.g - from.g) * localProgress);
+        const b = Math.round(from.b + (to.b - from.b) * localProgress);
+
+        return `rgb(${r}, ${g}, ${b})`;
+      },
+
+      hexToRgb(hex) {
+        const clean = hex.replace('#', '');
+        return {
+          r: parseInt(clean.substring(0, 2), 16),
+          g: parseInt(clean.substring(2, 4), 16),
+          b: parseInt(clean.substring(4, 6), 16)
+        };
       },
 
       handleMove(x, y) {
