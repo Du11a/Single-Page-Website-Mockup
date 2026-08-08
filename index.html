@@ -7,7 +7,6 @@
 
 <!-- preload critical assets so they start fetching immediately, before CSS is parsed -->
 <link rel="preload" href="output.css" as="style">
-<link rel="preload" href="https://fonts.gstatic.com/s/spacegrotesk/v16/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj62UunJRuCU25aQzXsxlOX6ZFOn.woff2" as="font" type="font/woff2" crossorigin>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,9 +17,9 @@
 <!-- prefetch the portfolio page since it's the most likely next click from the footer -->
 <link rel="prefetch" href="https://du11a.github.io/Portfolio">
 
+<script defer src="script.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.14.1/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
-<script defer src="script.js"></script>
 </head>
 <body class="bg-bg text-text font-sans leading-relaxed antialiased overflow-x-hidden" x-data="landingPage()" x-init="init()" @scroll.window="onScroll()">
 
