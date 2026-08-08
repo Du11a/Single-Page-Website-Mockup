@@ -4,93 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Your App, Here — Landing Page Demo by Dulla (Alpine.js + Tailwind)</title>
+
+<!-- preload critical assets so they start fetching immediately, before CSS is parsed -->
+<link rel="preload" href="dist/output.css" as="style">
+<link rel="preload" href="https://fonts.gstatic.com/s/spacegrotesk/v16/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj62UunJRuCU25aQzXsxlOX6ZFOn.woff2" as="font" type="font/woff2" crossorigin>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          bg: '#0d0d17',
-          border: '#232330',
-          text: '#f2f0f5',
-          dim: '#9490a3',
-          faint: '#57536b',
-          violet: '#8b5cf6',
-          violetbright: '#a78bfa',
-        },
-        fontFamily: {
-          display: ['Space Grotesk', 'sans-serif'],
-          sans: ['Inter', '-apple-system', 'sans-serif'],
-        },
-      }
-    }
-  }
-</script>
+
+<link rel="stylesheet" href="dist/output.css">
+
+<!-- prefetch the portfolio page since it's the most likely next click from the footer -->
+<link rel="prefetch" href="https://du11a.github.io/Portfolio">
+
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.14.1/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
-<style>
-  body { cursor: default; }
-
-  .violet-glow { background: rgba(139, 92, 246, 0.18); }
-
-  .trail-zone::before {
-    content: '';
-    position: absolute;
-    top: 10%; left: 50%;
-    width: 700px; height: 700px;
-    transform: translate(-50%, var(--parallax-y, 0px));
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.28) 0%, transparent 65%);
-    pointer-events: none;
-    z-index: 0;
-    animation: ambient-drift 12s ease-in-out infinite;
-    transition: transform 0.1s linear;
-  }
-  @keyframes ambient-drift {
-    0%, 100% { transform: translate(-50%, var(--parallax-y, 0px)) scale(1); opacity: 1; }
-    50% { transform: translate(calc(-50% + 12px), calc(var(--parallax-y, 0px) + 30px)) scale(1.08); opacity: 0.85; }
-  }
-
-  body {
-    transition: background-color 0.4s ease;
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .reveal.in-view { opacity: 1; transform: translateY(0); }
-
-  .hint-dot { animation: pulse 2s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-  .btn { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease; }
-  .btn-primary:hover { box-shadow: 0 12px 28px -6px rgba(139, 92, 246, 0.18); }
-
-  .trail-icon {
-    position: fixed;
-    width: 56px; height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    pointer-events: none;
-    z-index: 10;
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
-    animation: trail-pop 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    box-shadow: 0 8px 24px -6px rgba(0,0,0,0.5);
-  }
-  @keyframes trail-pop {
-    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(var(--rot-start, -10deg)); }
-    18% { opacity: 1; transform: translate(-50%, -50%) scale(1.08) rotate(calc(var(--rot-start, 0deg) * 0.3)); }
-    35% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-    100% { opacity: 0; transform: translate(calc(-50% + var(--drift-x, 0px)), calc(-50% + var(--drift-y, -30px))) scale(var(--scale-end, 0.85)) rotate(var(--rot-end, 8deg)); }
-  }
-</style>
+<script defer src="script.js"></script>
 </head>
 <body class="bg-bg text-text font-sans leading-relaxed antialiased overflow-x-hidden" x-data="landingPage()" x-init="init()" @scroll.window="onScroll()">
 
@@ -181,128 +111,6 @@
 <footer class="py-8 text-center border-t border-border font-display text-[12.5px] text-faint">
   Demo landing page by <a href="https://du11a.github.io/Portfolio" target="_blank" class="text-violetbright">Dulla</a> · Inspired by modern app landing pages · Rewritten with Alpine.js + Tailwind
 </footer>
-
-<script>
-  function landingPage() {
-    return {
-      icons: [],
-      nextId: 0,
-      lastSpawn: 0,
-      spawnInterval: 130,
-      prefersReducedMotion: false,
-      scrollTicking: false,
-      bgStops: ['#0d0d17', '#1a1230', '#171029', '#0d0d17'],
-
-      ICONS: [
-        { emoji: '🎧', bg: '#1DB954', shape: 'circle' },
-        { emoji: '🎬', bg: '#E50914', shape: 'square' },
-        { emoji: '📝', bg: '#000000', shape: 'rounded' },
-        { emoji: '💬', bg: '#4A154B', shape: 'rounded' },
-        { emoji: '🎨', bg: '#0ACF83', shape: 'circle' },
-        { emoji: '📷', bg: '#C13584', shape: 'circle' },
-        { emoji: '🎮', bg: '#5865F2', shape: 'rounded' },
-        { emoji: '📚', bg: '#F3722C', shape: 'square' },
-        { emoji: '✈️', bg: '#0091FF', shape: 'circle' },
-        { emoji: '🎵', bg: '#FA243C', shape: 'circle' },
-        { emoji: '📅', bg: '#4285F4', shape: 'rounded' },
-        { emoji: '💰', bg: '#00D09C', shape: 'square' }
-      ],
-      SHAPE_RADIUS: { circle: '50%', square: '6px', rounded: '16px' },
-
-      init() {
-        this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (this.prefersReducedMotion) {
-          document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
-        }
-      },
-
-      onScroll() {
-        if (this.prefersReducedMotion || this.scrollTicking) return;
-        this.scrollTicking = true;
-        requestAnimationFrame(() => {
-          const scrollY = window.scrollY;
-          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-          const progress = docHeight > 0 ? Math.min(scrollY / docHeight, 1) : 0;
-
-          const parallaxY = scrollY * 0.5;
-          document.documentElement.style.setProperty('--parallax-y', `${parallaxY}px`);
-
-          document.body.style.backgroundColor = this.interpolateColor(progress);
-
-          this.scrollTicking = false;
-        });
-      },
-
-      interpolateColor(progress) {
-        const segment = progress * (this.bgStops.length - 1);
-        const index = Math.min(Math.floor(segment), this.bgStops.length - 2);
-        const localProgress = segment - index;
-
-        const from = this.hexToRgb(this.bgStops[index]);
-        const to = this.hexToRgb(this.bgStops[index + 1]);
-
-        const r = Math.round(from.r + (to.r - from.r) * localProgress);
-        const g = Math.round(from.g + (to.g - from.g) * localProgress);
-        const b = Math.round(from.b + (to.b - from.b) * localProgress);
-
-        return `rgb(${r}, ${g}, ${b})`;
-      },
-
-      hexToRgb(hex) {
-        const clean = hex.replace('#', '');
-        return {
-          r: parseInt(clean.substring(0, 2), 16),
-          g: parseInt(clean.substring(2, 4), 16),
-          b: parseInt(clean.substring(4, 6), 16)
-        };
-      },
-
-      handleMove(x, y) {
-        if (this.prefersReducedMotion) return;
-        const now = Date.now();
-        if (now - this.lastSpawn < this.spawnInterval) return;
-        this.lastSpawn = now;
-        this.spawnIcon(x, y);
-      },
-
-      spawnIcon(x, y) {
-        const choice = this.ICONS[Math.floor(Math.random() * this.ICONS.length)];
-        const id = this.nextId++;
-
-        const icon = {
-          id,
-          emoji: choice.emoji,
-          bg: choice.bg,
-          radius: this.SHAPE_RADIUS[choice.shape],
-          x, y,
-          driftX: (Math.random() - 0.5) * 90,
-          driftY: -30 - Math.random() * 55,
-          rotStart: (Math.random() - 0.5) * 70,
-          rotEnd: (Math.random() - 0.5) * 90,
-          scaleEnd: 0.75 + Math.random() * 0.3
-        };
-
-        this.icons.push(icon);
-        setTimeout(() => {
-          this.icons = this.icons.filter(i => i.id !== id);
-        }, 1450);
-      },
-
-      magnetic(e) {
-        if (this.prefersReducedMotion) return;
-        const btn = e.currentTarget;
-        const rect = btn.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        btn.style.transform = `translate(${x * 0.35}px, ${y * 0.35}px)`;
-      },
-
-      resetMagnetic(e) {
-        e.currentTarget.style.transform = '';
-      }
-    };
-  }
-</script>
 
 </body>
 </html>
